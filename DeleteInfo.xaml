@@ -31,7 +31,7 @@ IsReadOnly="True" />
                 </DataGridTemplateColumn>
             </DataGrid.Columns>
         </DataGrid>
-        <TextBox x:Name="textBox1" HorizontalAlignment="Left" Margin="12,47,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="256" Height="21" FontSize="14"/>
+        <TextBox x:Name="textBox1" HorizontalAlignment="Left" Margin="12,47,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="256" Height="21" FontSize="14" TextChanged="textBox1_TextChanged"/>
         <Label Content="Search by employee lastname" HorizontalAlignment="Left" Margin="12,16,0,0" VerticalAlignment="Top" FontSize="14"/>
     </Grid>
 </Window>

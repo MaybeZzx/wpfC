@@ -94,7 +94,7 @@ namespace employee
         private void textBox1_TextChanged(object sender, TextChangedEventArgs e)
         {
             DataView dv = dt.DefaultView;
-            dv.RowFilter = string.Format("Last_Name like '{0}%'", textBox1.Text);
+            dv.RowFilter = string.Format($"last_Name like '{textBox1.Text}%'");
         }
 }
 
