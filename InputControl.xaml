@@ -1,0 +1,16 @@
+﻿<Window x:Class="employee.InputControl"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:employee"
+        mc:Ignorable="d"
+        Title="InputControl" Height="135" Width="304" WindowStartupLocation="CenterScreen" WindowStyle="ThreeDBorderWindow">
+    <Grid>
+        <TextBox x:Name="txtAnswer" TextWrapping="Wrap" Margin="12,37,0,0" Height="18" VerticalAlignment="Top" HorizontalAlignment="Left" Width="260"/>
+        <Label x:Name="lblQuestion" Content="" HorizontalAlignment="Left" Margin="12,6,0,0" Height="26" VerticalAlignment="Top"/>
+        <Button x:Name="btnDialogOk" Content="OK" Margin="170,68,0,0" Click="btnDialogOk_Click" HorizontalAlignment="Left" Width="44" Height="20" VerticalAlignment="Top"/>
+        <Button x:Name="btnDialogCancel" Content="Cancel" Margin="227,68,0,0" Click="btnDialogCancel_Click" HorizontalAlignment="Left" Width="45" Height="20" VerticalAlignment="Top"/>
+
+    </Grid>
+</Window>
