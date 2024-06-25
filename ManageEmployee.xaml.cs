@@ -27,8 +27,7 @@ namespace employee
         }
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            string sql = "SELECT id, first_name, last_name, hourly_rate from employee where id=" +
-            "(select min(id) from employee_photo where department_no='L004');";
+            string sql = "SELECT id, first_name, last_name, hourly_rate from employee where id=(select min(id) from employee_photo);";
             myRecord(sql);
         }
         public void myRecord(string sql)
@@ -52,7 +51,7 @@ namespace employee
                         {
                             BitmapImage bm1 = new BitmapImage();
                             bm1.BeginInit();
-                            bm1.UriSource = new Uri(@"e:\\images\" + id + ".jpg", UriKind.Relative);
+                            bm1.UriSource = new Uri($@"D:\\wpf\image\{first_name}_{last_name}.jpg", UriKind.Relative);
                             bm1.CacheOption = BitmapCacheOption.OnLoad;
                             bm1.EndInit();
                             image1.Source = bm1;
@@ -74,14 +73,12 @@ namespace employee
         }
         private void NextButton_Click(object sender, RoutedEventArgs e)
         {
-            string sql = "SELECT id, first_name, last_name, hourly_rate from employee where" +
-            " (department_no='L004' AND id>" + Record + " ) ORDER BY id limit 1;";
+            string sql = "SELECT id, first_name, last_name, hourly_rate from employee where (id>" + Record + " ) ORDER BY id limit 1;";
             myRecord(sql);
         }
         private void PreviousButton_Click(object sender, RoutedEventArgs e)
         {
-            string sql = "SELECT id, first_name, last_name, hourly_rate from employee where" +
-            "(department_no='L004' AND id<" + Record + " ) ORDER BY id DESC limit 1;";
+            string sql = "SELECT id, first_name, last_name, hourly_rate from employee where ( id<" + Record + " ) ORDER BY id DESC limit 1;";
             myRecord(sql);
         }
 

@@ -10,7 +10,6 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using MySql.Data.MySqlClient;
 using Microsoft.Win32;
 using System.IO;
@@ -26,16 +25,37 @@ namespace employee
 
     public partial class InsertDB : Window
     {
-        //private string photo;
+        private string photo;
         public InsertDB()
         {
             InitializeComponent();
         }
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            string resetAutoIncrementSql;
+            MySqlCommand resetAutoIncrementCommand;
             string Connect = "server=127.0.0.1; port=3306; userid=admin; password=1234567890Qwe.; database=my_company; sslmode=none;";
             MySqlConnection connection = new MySqlConnection(Connect);
             string command = "select department_no, department_name, department_manager from department";
+            connection.Open();
+            string countQuery = "SELECT COUNT(*) FROM employee;";
+            MySqlCommand countCommand = new MySqlCommand(countQuery, connection);
+            int count = Convert.ToInt32(countCommand.ExecuteScalar());
+
+            if (count == 0)
+            {
+                resetAutoIncrementSql = "ALTER TABLE employee AUTO_INCREMENT = 1;";
+                resetAutoIncrementCommand = new MySqlCommand(resetAutoIncrementSql, connection);
+                resetAutoIncrementCommand.ExecuteNonQuery();
+            }
+            else
+            {
+                count++;
+                resetAutoIncrementSql = $"ALTER TABLE employee AUTO_INCREMENT = {count};";
+                resetAutoIncrementCommand = new MySqlCommand(resetAutoIncrementSql, connection);
+                resetAutoIncrementCommand.ExecuteNonQuery();
+            }
+            connection.Close();
             MySqlDataAdapter da = new MySqlDataAdapter(command, connection);
             DataTable dt = new DataTable();
             da.Fill(dt);
@@ -44,6 +64,9 @@ namespace employee
             Departments.SelectedIndex = 0;
             textBox_HourlyRate.Text = "0.00";
             BitmapImage bm1 = new BitmapImage();
+
+           
+
         }
 
         private void Departments_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -64,7 +87,7 @@ namespace employee
 
         private void LoadPhoto_Click(object sender, RoutedEventArgs e)
         {
-            /*OpenFileDialog myDialog = new OpenFileDialog();
+            OpenFileDialog myDialog = new OpenFileDialog();
             myDialog.Filter = "Images(*.JPG;*.GIF;*.PNG)|*.JPG;*.GIF;*.PNG" + "|All files (*.*)|*.* ";
             myDialog.CheckFileExists = true;
             if (myDialog.ShowDialog() == true)
@@ -72,20 +95,23 @@ namespace employee
                 try
                 {
                     photo = myDialog.FileName;
+                    string fileName = Path.GetFileName(photo);
                     BitmapImage bm1 = new BitmapImage();
                     bm1.BeginInit();
                     bm1.UriSource = new Uri(myDialog.FileName, UriKind.Relative);
                     bm1.CacheOption = BitmapCacheOption.OnLoad;
                     bm1.EndInit();
                     image1.Source = bm1;
+
+                   
                 }
                 catch
                 {
                     MessageBox.Show("Unable to Load Image");
-                    image1.Source = new BitmapImage(new Uri("../image/noname.png", UriKind.Relative));
-                    
+                    image1.Source = new BitmapImage(new Uri(@"..\image\noname.png", UriKind.Relative));
+
                 }
-            }*/
+            }
         }
 
         private void Save_Click(object sender, RoutedEventArgs e)
@@ -135,27 +161,12 @@ namespace employee
                 {
                     ci.NumberFormat.NumberDecimalSeparator = ".";
                     Thread.CurrentThread.CurrentCulture = ci;
-                };
-                double hourly_rate;
-                if (!string.IsNullOrEmpty(textBox_FirstName.Text) ||
-                (!string.IsNullOrEmpty(textBox_LastName.Text)))
-                {
-                    if (double.TryParse(textBox_HourlyRate.Text, out hourly_rate))
-                    {
-                        comm.CommandText = "INSERT INTO employee (first_name, last_name, hourly_rate, department_no) " +
-                            "VALUES('" + first_name + "', '" + last_name + "', '" + hourly_rate+"','"+department_no+"');";
-                        MessageBox.Show(comm.CommandText);
-                        comm.ExecuteNonQuery();
-                    }
-                    else
-                    {
-                        MessageBox.Show("Missing hourly rate");
-                    }
                 }
                 else
                 {
                     MessageBox.Show(" Missing record");
-                };
+                }
+                double hourly_rate;
 
                 if ((string.IsNullOrEmpty(textBox_FirstName.Text)) &&
                 (string.IsNullOrEmpty(textBox_LastName.Text)))
@@ -166,10 +177,34 @@ namespace employee
                 {
                     JpegBitmapEncoder jpegBitmapEncoder = new JpegBitmapEncoder();
                     jpegBitmapEncoder.Frames.Add(BitmapFrame.Create(image1.Source as BitmapSource));
-                    FileStream fileStream = new FileStream(@"e:\\images\" + textBox_FirstName.Text +
-                        textBox_LastName.Text + ".jpg", FileMode.Create);
-                    jpegBitmapEncoder.Save(fileStream);
-                    fileStream.Close();
+                    string fileName = $"{textBox_FirstName.Text}_{textBox_LastName.Text}.jpg";
+                    string filePath = $@"D:\wpf\image\{fileName}";
+                    photo = filePath;
+                    string directoryPath = Path.GetDirectoryName(filePath);
+                    if (!Directory.Exists(directoryPath))
+                    {
+                        Directory.CreateDirectory(directoryPath);
+                    }
+
+                    using (FileStream file = new FileStream(filePath, FileMode.Create))
+                    {
+                        jpegBitmapEncoder.Save(file);
+                    }
+                }
+                if (!string.IsNullOrEmpty(textBox_FirstName.Text) ||
+                (!string.IsNullOrEmpty(textBox_LastName.Text)))
+                {
+                    if (double.TryParse(textBox_HourlyRate.Text, out hourly_rate))
+                    {
+                        comm.CommandText = "INSERT INTO employee (first_name, last_name, hourly_rate, department_no, photo) " +
+                            "VALUES('" + first_name + "', '" + last_name + "', '" + hourly_rate+"','"+department_no+"','"+photo+"');";
+                        MessageBox.Show(comm.CommandText);
+                        comm.ExecuteNonQuery();
+                    }
+                    else
+                    {
+                        MessageBox.Show("Missing hourly rate");
+                    }
                 }
             }
             catch (Exception ex)

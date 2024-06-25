@@ -16,7 +16,7 @@ using System.Data;
 using MySql.Data;
 using System.Runtime.Remoting.Messaging;
 using WpfApplication1;
-
+using System.IO;
 
 namespace employee
 {
@@ -71,18 +71,31 @@ namespace employee
                 dt1 = dt;
                 int index = Employees.SelectedIndex;
                 int id = Convert.ToInt32(dt1.DefaultView[index]["id"]);
+                string firstname = Convert.ToString(dt1.DefaultView[index]["first_name"]);
+                string lastname = Convert.ToString(dt1.DefaultView[index]["last_name"]);
                 DataRow b = dt1.Rows[index];
                 dt1.Rows.Remove(b);
                 Employees.ItemsSource = dt1.DefaultView;
                 string Connect = "server=127.0.0.1; port=3306; userid=admin; password=1234567890Qwe.; database=my_company; sslmode=none;";
-
                 string sql = "delete FROM employee where id=" + id + ";";
-
                 MySqlConnection connection = new MySqlConnection(Connect);
                 connection.Open();
+
+                string getPhotoPathQuery = $"SELECT photo FROM employee WHERE id = {id};";
+                MySqlCommand getPhotoPathCommand = new MySqlCommand(getPhotoPathQuery, connection);
+                object result = getPhotoPathCommand.ExecuteScalar();
+                if (result != null)
+                {
+                    string fileName = $"{firstname}_{lastname}.jpg";
+                    string filePath = $@"D:\wpf\image\{fileName}";
+                    // Удаление файла фотографии
+                    if (File.Exists(filePath))
+                    {
+                        File.Delete(filePath);
+                    }
+                }
                 MySqlCommand command = new MySqlCommand(sql, connection);
                 int countLine = command.ExecuteNonQuery();
-                MessageBox.Show("Количество удаленных строк " + countLine);
                 connection.Close();
 
             }

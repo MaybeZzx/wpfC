@@ -9,7 +9,7 @@
         Title="ManageEmployee" Height="283" Width="491" WindowStartupLocation="CenterScreen">
     <Grid>
         <Border BorderBrush="Black" BorderThickness="1" Margin="182,9,182,0" Height="118" VerticalAlignment="Top"/>
-        <Image x:Name="image1" Height="116" Margin="183,10,183,0" VerticalAlignment="Top"/>
+        <Image x:Name="image1" Height="116" Margin="183,10,183,0" VerticalAlignment="Top" Stretch="Fill" Source="/noname.png"/>
         <Button x:Name="PreviousButton" Content="Previous" HorizontalAlignment="Left" Margin="21,134,0,0" VerticalAlignment="Top" Height="20" Width="69" Click="PreviousButton_Click"/>
         <Button x:Name="NextButton" Content="Next" HorizontalAlignment="Left" Margin="400,134,0,0" VerticalAlignment="Top" Height="20" Width="69" Click="NextButton_Click"/>
         <TextBox x:Name="textBox1" HorizontalAlignment="Center" TextWrapping="Wrap" Width="127" Margin="0,145,0,0" Height="18" VerticalAlignment="Top"/>
